@@ -1,14 +1,15 @@
 'use client'
 import { Layout } from 'antd';
 
-
 const AdminFooter = () => {
-    const { Footer} = Layout;
-    const currentYear = new Date().getFullYear();
+    const { Footer } = Layout;
+
     return (
+        <>
             <Footer style={{ textAlign: 'center' }}>
-                HongNeu ©{currentYear} Created by HongNeu
+                Hỏi Dân IT ©{new Date().getFullYear()} Created by @hoidanit
             </Footer>
+        </>
     )
 }
 
