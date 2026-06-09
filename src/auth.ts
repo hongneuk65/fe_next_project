@@ -2,7 +2,6 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { sendRequest } from "./utils/api";
 import { InActiveAccountError, InvalidEmailPasswordError } from "./utils/errors";
-import errorEntry from "next/dist/server/typescript/rules/error";
 import { IUser } from "./types/next-auth";
 
 
@@ -12,19 +11,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, username, password, 2FA token, etc.
       credentials: {
-        email: {},
+        username: {},
         password: {},
       },
       authorize: async (credentials) => {
+
         const res = await sendRequest<IBackendRes<ILogin>>({
           method: "POST",
-          url: "http://localhost:8080/api/v1/auth/login",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
           body: {
-            username: credentials.email,
+            username: credentials.username,
             password: credentials.password
           }
         })
-        if (!res.statusCode) {
+
+        if (res.statusCode === 201) {
           return {
             _id: res.data?.user?._id,
             name: res.data?.user?.name,
@@ -36,6 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } else if (+res.statusCode === 400) {
           throw new InActiveAccountError()
         } else {
+          console.log(res.statusCode)
           throw new Error("internal server error")
         }
         // return user object with their profile data
@@ -58,5 +60,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       (session.user as IUser) = token.user
       return session
     },
+    authorized: async ({auth}) => {
+      return !! auth
+    }
   },
 })

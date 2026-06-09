@@ -3,22 +3,24 @@ import { InvalidEmailPasswordError } from './errors';
 
 import { signIn } from "@/auth";
 
-export async function authenticate(email: string, password: string) {
+export async function authenticate(username: string, password: string) {
+    
     try {
         const r = await signIn("credentials", {
-            email: email,
+            username: username,
             password: password,
             // callbackUrl: "/",
             redirect: false,
         })
         return r;
     } catch (error) {
-        if ((error as any).type === "InvalidEmailPasswordError") {
+        
+        if ((error as any).name === "InvalidEmailPasswordError") {
             return {
                 error: (error as any).type,
                 code: 1
             }
-        } else if ((error as any).type === "InActiveAccountError") {
+        } else if ((error as any).name === "InActiveAccountError") {
             return {
                 error: (error as any).type,
                 code: 2
