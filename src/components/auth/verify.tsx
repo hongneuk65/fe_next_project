@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
+import { Button, Col, Divider, Form, Input, message, notification, Row } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { sendRequest } from '@/utils/api';
@@ -23,6 +23,7 @@ const Verify = (props: any) => {
         })
         console.log
         if (res?.data) {
+            message.success("kích hoạt tài khoản thành công")
             router.push(`/auth/login`)
         } else {
             notification.error({
