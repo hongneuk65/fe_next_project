@@ -10,10 +10,9 @@ const Verify = (props: any) => {
     const { id } = props;
 
     const router = useRouter()
+
     const onFinish = async (values: any) => {
         const { _id, code } = values;
-        console.log("check values", values)
-
         const res = await sendRequest<IBackendRes<any>>({
             url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/check-code`,
             method: "POST",
@@ -21,17 +20,15 @@ const Verify = (props: any) => {
                 _id, code
             }
         })
-        console.log
         if (res?.data) {
-            message.success("kích hoạt tài khoản thành công")
-            router.push(`/auth/login`)
+            message.success("Kích hoạt tài khoản thành công.")
+            router.push(`/auth/login`);
         } else {
             notification.error({
-                message: "Register error",
+                message: "Verify error",
                 description: res?.message
             })
         }
-
     };
 
     return (
@@ -54,25 +51,29 @@ const Verify = (props: any) => {
                             label="Id"
                             name="_id"
                             initialValue={id}
-                        hidden
-
+                            hidden
                         >
                             <Input disabled />
                         </Form.Item>
-                        <div>Mã code đã được gửi tới email đăng ký, vui lòng kiểm tra email</div>
+                        <div>
+                            Mã code đã được gửi tới email đăng ký, vui lòng kiểm tra email.
+                        </div>
                         <Divider />
+
                         <Form.Item
                             label="Code"
                             name="code"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your code',
+                                    message: 'Please input your code!',
                                 },
                             ]}
                         >
-                            <Input.Password />
+                            <Input />
                         </Form.Item>
+
+
 
                         <Form.Item
                         >
@@ -94,4 +95,4 @@ const Verify = (props: any) => {
     )
 }
 
-export default Verify
+export default Verify;

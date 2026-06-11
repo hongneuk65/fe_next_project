@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 
 const Register = () => {
     const router = useRouter()
+
     const onFinish = async (values: any) => {
         const { email, password, name } = values;
         const res = await sendRequest<IBackendRes<any>>({
@@ -18,14 +19,13 @@ const Register = () => {
             }
         })
         if (res?.data) {
-            router.push(`/verify/${res?.data?._id}`)
+            router.push(`/verify/${res?.data?._id}`);
         } else {
             notification.error({
                 message: "Register error",
                 description: res?.message
             })
         }
-
     };
 
     return (

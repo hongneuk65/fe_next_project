@@ -6,19 +6,26 @@ import { authenticate } from '@/utils/actions';
 import { useRouter } from 'next/navigation';
 import ModalReactive from './modal.reactive';
 import { useState } from 'react';
+import ModalChangePassword from './modal.change.password';
 
 const Login = () => {
-    const [isModalOpen, setIsMoDalOpen] = useState(false);
-    const [userEmail, setUserEmail] = useState("")
-    const router = useRouter()
+    const router = useRouter();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [userEmail, setUserEmail] = useState("");
+
+    const [changePassword, setChangePassword] = useState(false);
+
     const onFinish = async (values: any) => {
         const { username, password } = values;
-        setUserEmail("")
+        setUserEmail("");
+        //trigger sign-in
         const res = await authenticate(username, password);
+
         if (res?.error) {
+            //error
             if (res?.code === 2) {
-                setIsMoDalOpen(true)
-                setUserEmail(username)
+                setIsModalOpen(true);
+                setUserEmail(username);
                 return;
             }
             notification.error({
@@ -27,10 +34,9 @@ const Login = () => {
             })
 
         } else {
-            router.push('/dashboard')
+            //redirect to /dashboard
+            router.push('/dashboard');
         }
-        // const data = await signIn("credentials", {email, password, redirect:false})
-        // console.log("check data", data)
     };
 
     return (
@@ -80,9 +86,16 @@ const Login = () => {
 
                             <Form.Item
                             >
-                                <Button type="primary" htmlType="submit">
-                                    Login
-                                </Button>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center"
+                                }}>
+                                    <Button type="primary" htmlType="submit">
+                                        Login
+                                    </Button>
+                                    <Button type='link' onClick={() => setChangePassword(true)}>Quên mật khẩu ?</Button>
+                                </div>
                             </Form.Item>
                         </Form>
                         <Link href={"/"}><ArrowLeftOutlined /> Quay lại trang chủ</Link>
@@ -95,12 +108,14 @@ const Login = () => {
             </Row>
             <ModalReactive
                 isModalOpen={isModalOpen}
-                setIsMoDalOpen={setIsMoDalOpen}
-                userEmail = {userEmail}
+                setIsModalOpen={setIsModalOpen}
+                userEmail={userEmail}
             />
-
+            <ModalChangePassword
+                isModalOpen={changePassword}
+                setIsModalOpen={setChangePassword}
+            />
         </>
-
     )
 }
 
